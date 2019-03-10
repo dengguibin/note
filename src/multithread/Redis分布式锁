@@ -1,0 +1,10 @@
+满足条件：互斥，不会发生死锁，解铃还须系铃人
+
+加锁：
+    1.jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
+解锁：
+    1.String script = "if redis.call('get', KEYS[1]) == ARGV[1]
+                    then return redis.call('del', KEYS[1]) else return 0 end";
+      KEYS[1]赋值为lockKey，ARGV[1]赋值为requestId
+    2.执行script脚本
+

@@ -1,0 +1,24 @@
+1.自己写一个线程池，可以设置以下参数：
+        有多少任务可以并发执行
+        有多少任务等待执行
+2.Executors
+    静态方法
+        ExecutorService newFixedThreadPool()：
+            固定程度
+        newCachedThreadPool
+
+        newSingleThreadExecutor
+        newScheduledThreadPool
+    ExecutorService.shutDown（）停止线程
+
+3.延迟任务与周期任务：
+    Timer在延迟任务与周期任务上面的缺陷：
+        问题一：如果存在多个任务，且任务时间过长，超过了两个任务的间隔时间，会发生一些缺陷：
+                定义了两个任务，预计是第一个任务1s后执行，第二个任务3s后执行，task2实际上是4后才执行
+        问题二：如果timerTask抛出流unchecked异常，将终止定时线程，Timer也不会恢复线程的执行，
+                而是认为整个timer都被取消了
+
+    Quartz：可以执行周期任务，也可以执行延时任务，是一个框架，重量级
+
+    Redis延时任务：
+

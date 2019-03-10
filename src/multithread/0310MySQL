@@ -1,0 +1,26 @@
+分区类型：
+    RANGE分区：基于属于一个给定连续区间的列值，把多行分配给分区。
+    LIST分区：
+        PARTITION BY LIST(store_id)
+                PARTITION pNorth VALUES IN (3,5,6,9,17),
+                PARTITION pEast VALUES IN (1,2,10,11,19,20),
+                PARTITION pWest VALUES IN (4,12,13,14,18),
+                PARTITION pCentral VALUES IN (7,8,15,16)
+            );
+
+    HASH分区：
+        PARTITION BY HASH(store_id)
+        PARTITIONS 4;
+        如果没有包括一个PARTITIONS子句，那么分区的数量将默认为1。
+
+sql优化：
+    1.对查询进行优化，要尽量避免全表扫描，首先应考虑在 where 及 order by 涉及的列上建立索引。
+    2.应尽量避免在 where 子句中对字段进行 null 值判断，否则将导致引擎放弃使用索引而进行全表扫描
+    3.应尽量避免在 where 子句中使用 != 或 <> 操作符，否则将引擎放弃使用索引而进行全表扫描。
+    4.应尽量避免在 where 子句中使用 or 来连接条件，如果一个字段有索引，
+      一个字段没有索引，将导致引擎放弃使用索引而进行全表扫描。
+      可以改为union all
+    5.很多时候用 exists 代替 in 是一个好的选择
+    6.尽量使用数字型字段，若只含数值信息的字段尽量不要设计为字符型
+
+
