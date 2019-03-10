@@ -1,0 +1,54 @@
+写出线程安全的代码：
+   1.栈封闭
+   2.threadlocal
+   3.不使用成员变量
+   4.成员变量不可变
+   5.使用锁同步
+
+concurrentHashMap：
+    分段锁：任意数量的读取线程可以并发访问，读取和写入可以并发访问
+    迭代器弱一致性：size（），isEmpty（）被弱化返回只是近似值，以换取其他更重要操作的性能优化，包括：get,put
+        containsKey，remove
+    额外的原子操作：若没有则添加，若相等则移除，若相等则替换
+
+
+copyOnWriteArrayList：
+        迭代期间不需要对容器进行加锁或复制。
+        发布一个事实不可变对象，每次修改时都会创建并重新发布一个新的容器副本
+        迭代操作远远多于修改操作，才应该使用写入时复制容器
+
+
+使用Future实现页面渲染器：将页面渲染分解为两个任务，一个下载图像（IO密集型）
+一个是渲染文本（CPU密集型）
+    下载图像：
+    Callable<List<ImageData>> task
+    ExecutorService = Executors.newFixThreadPool（1）
+    future = ExecutorService.submit(task)
+    渲染文本：
+    renderText(future.get())
+
+为任务设置时限：任务超时后会立即停止
+    Future <Ad> f = exec.submit(new FetchAdTaskCallable())
+    Page page = renderPageBody();
+    ad = f.get(timeout,timeUnit)//设置超时时间
+    page.setAd(ad)
+
+阻塞方法与中断方法：
+    阻塞方法会抛出checkedException（interruptedException）
+    中断是一种协作机制，一个线程不能强制停止其他线程正在执行的操作，当线程A中断B时，B在执行到
+    某个可以暂停的地方停止操作
+
+闭锁：
+    计算n个线程运行时间，必须同时开始，结束时间为最后时间为准
+    这N个线程执行之前全部startGate.await，最后统一由主线程countDown1次
+    N个执行完之后再endgate.countDown，而主线程endGate.await
+
+信号量（semaphore）：
+    acquire，realease
+
+读写锁（ReadWriteLock）：
+    读读共享，读写互斥，写写互斥
+
+
+减少锁的竞争：
+    缩小锁的范围，减小锁的粒度，分段锁，
